@@ -5,22 +5,23 @@ import typing as t
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import math
 
 random.seed(0)
-
-
 class Particle:
     # using r as position vector, holds X,Y coordinates , initialized as 0, 0 two elements
     # v as velocity 0,0 no speed at both direction
     # R is radios for two particles , m is mass for momentum after collision
     # using id to track individual particles.
     # particle initized when created.
-    def __init__(self, id=0, r=np.zeros(2), v=np.zeros(2), R=1E-2, m=1, color="blue"):
+    def __init__(self, id=0, r=np.zeros(2), v=np.zeros(2), R=1E-2, m=1, color="blue", temperature=0, conc=10):
         # using tuple assignment for defining variables
         self.id, self.r, self.v, self.R, self.m, self.color = id, r, v, R, m, color
+        self.temperature, self.conc = temperature, conc
 
     def __repr__(self):
-        return f"Particle(id={self.id}, r={self.r}, v={self.v}, R={self.R}, m={self.m}, color={self.color})"
+        return f"Particle(id={self.id}, r={self.r}, v={self.v}, R={self.R}, m={self.m}, color={self.color}," \
+               f"temperature={self.temperature}, conc={self.conc})"
 
 
 # creating a box for holding particles, the system progresses with time
@@ -31,7 +32,7 @@ class Simulation:
     X = 2
     Y = 2
 
-    def __init__(self, dt=0.6E-2, Np=20):
+    def __init__(self, dt=0.6E-2, Np=100):
         self.dt = dt
         self.Np = Np
         # creating particles as a list which creates the class Particle itself
@@ -50,8 +51,10 @@ class Simulation:
             # particle.R provides the boundary(Radios) of the particle itself
             if (x > self.X/2 - particle1.R) or (x < -self.X/2 + particle1.R):
                 particle1.v[0] *= -1  # reflecting velocity of X component
+                # particle1.temperature[0] *= -1
             if (y > self.Y/2 - particle1.R) or (y < -self.Y/2 + particle1.R):
                 particle1.v[1] *= -1  # 0 and 1 provides the axis
+                # particle1.temperature[1] *= -1
                 # reflecting velocity of Y component, here multiplying by -1 makes the direction opposite
                 # to compare one particle with other particle, 1 and 2 naming is implemented
 
@@ -60,13 +63,26 @@ class Simulation:
                 # if the particle in the loop is the same particle then ignore it
                 if id(particle1) == id(particle2):
                     continue
-                m1, m2, r1, r2, v1, v2, = particle1.m, particle2.m, particle1.r, particle2.r, particle1.v, particle2.v
+                temperature1, temperature2, conc1, conc2, m1, m2, r1, r2, v1, v2, = \
+                    particle1.temperature, particle2.temperature,particle1.conc, particle2.conc,\
+                    particle1.m, particle2.m, particle1.r, particle2.r, particle1.v, particle2.v
+                # temperature1, temperature2, conc1, conc2 = particle1.temperature, particle2.temperature,\
+                #                                           particle1.conc, particle2.conc
                 if np.dot(r1 - r2, r1 - r2) <= (particle1.R + particle2.R)**2: # if two particles are overlapping
                 # use the formula of elastic collision to collide overlapping particles
-                    v1_new = v1 - 2*m1/(m1+m2) * np.dot(v1 - v2, r1 - r2) / np.dot(r1 - r2, r1 - r2) * (r1 - r2)  # 1st
+
+                # temperature1 = (1 / 3) * (m1 * ((v1) ** 2)) * (1 / (1.3806452 * 10 ** -23))
+                # temperature2 = (1 / 3) * (m2 * ((v2) ** 2)) * (1 / (1.3806452 * 10 ** -23))
+                # particle1.temperature = temperature1
+                # particle2.temperature = temperature2
+
+                    v1_new = v1 - 2*m1/(m1+m2) * np.dot(v1 - v2, r1 - r2) / np.dot(r1 - r2, r1 - r2) * (r1 - r2)    # 1st
                     v2_new = v2 - 2*m1/(m1+m2) * np.dot(v2 - v1, r2 - r1) / np.dot(r2 - r1, r2 - r1) * (r2 - r1)  # 2nd
                     particle1.v = v1_new
                     particle2.v = v2_new
+
+
+
                     ignore_list.append(particle2)
 
 
@@ -77,7 +93,12 @@ class Simulation:
     def incrementsim(self):
         self.collision_detection()
         for particle in self.particles:
-            particle.r += self.dt * particle.v
+            # T =1/3 mv**2/Kb
+            # particle.v = particle.v + math.sqrt(((3*particle.temperature*(1.3806452 * 10**-23)) / particle.m))
+            particle.r += self.dt * particle.v * particle.temperature # s=vt
+            # particle.r += self.dt * (particle.v +
+            #                          math.sqrt(((3*particle.temperature*(1.3806452 * 10**-23))
+            #                                     / (particle.m1+particle.m2))))
 
     # this function will loop over all particles from the list and returns a list of their position for plotting
     def particle_position(self):
@@ -98,8 +119,7 @@ for particle in sim.particles:  # giving the values of box size
     particle.r = np.random.uniform([-sim.X/2, -sim.Y/2], [sim.X/2, sim.Y/2], size=2)
     # giving the particles velocity to move in an angle for x and y axis
     particle.v = np.array([np.cos(np.pi/4), np.cos(np.pi/4)])
-
-
+    # particle.temperature = np.array([np.cos(np.pi/4), np.cos(np.pi/4)])
 # sim.particles[0].color = "red" # for 1 red particle
 # sim.particles[1].color = "red"
 # sim.particles[2].color = "red"

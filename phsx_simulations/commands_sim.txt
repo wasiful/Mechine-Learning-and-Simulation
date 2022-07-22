@@ -1,0 +1,8 @@
+a = np.array([[1,2 ], [3, 4], [5, 6]]))
+a.T # for transposing the array
+
+
+save a file in .mp4
+f = r"c://Users/xx/Desktop/animation.mp4" 
+writervideo = animation.FFMpegWriter(fps=60) 
+anim.save(f, writer=writervideo)
