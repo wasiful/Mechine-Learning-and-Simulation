@@ -6,11 +6,11 @@ from matplotlib.animation import FuncAnimation
 
 # Simulation of a planetary orbit assuming that the sun is resting
 
-day = 24 * 60 * 60 # [s]
-year = 365.25 * day # [s]
+day = 24 * 60 * 60  # [s]
+year = 365.25 * day  # [s]
 
 # astronomical unit [m]
-AE = 1.495978707e11
+AE = 1.495978707e11  # distance from earth to sun
 
 # scale factor for displaying acceleration and speed
 scal_a = 20  # [m/s**2]
@@ -21,7 +21,7 @@ T = 1 * year
 dt = 1 * day
 M = 1.9885e30  # mass of sun
 G = 6.674e-11  # Gravity constant
-r0 = np.array([0.0, 29.29e3])  # initial position of planet
+r0 = np.array([152.10e9, 0.0])  # initial position of planet
 v0 = np.array([0.0, 29.29e3])  # initial speed of the planet
 
 
