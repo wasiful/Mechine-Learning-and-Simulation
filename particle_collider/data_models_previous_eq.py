@@ -43,7 +43,7 @@ class CollisionModel:
         """
         v_rms = np.sqrt((3 * self.BLT_CONST * self.temp) / self.mass)
         v1 = self.INIT_VELOCITY + v_rms  # it has absorbed radiated energy itself while moving
-        a = v_rms * self.time1  # an unknown particle with different acceleration about to hit V1 particle
+        a = v_rms / self.time1  # an unknown particle with different acceleration about to hit V1 particle
         v2 = v1 + a * self.time2  # it is being hit by a particle thus received some energy from that's acceleration
 
         # del_v_square = (v2 - v1) ** 2
@@ -55,7 +55,7 @@ class CollisionModel:
         enr_ex_rate = (del_e/np.abs(self.time2 - self.time1)) / self.del_t
         concentration = (1/2) * self.mass * v_final ** 2 / self.VOLUME
         # concentration = self.mass * self.SPACIFIC_HEAT * (T2 - T1) / self.VOLUME
-        temperature_from_velocity = (1 / 3) * ((self.mass * v2 ** 2) / self.BLT_CONST)
+        temperature_from_velocity = (1 / 3) * (self.mass * v2 ** 2)
         final_force = self.FORCE_CONST * temperature_from_velocity * concentration * enr_ex_rate
         # final_force = enr_ex_rate
         return final_force

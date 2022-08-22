@@ -144,7 +144,7 @@ class CollisionModel:
         """
         v_rms = np.sqrt((3 * self.BLT_CONST * self.temp) / self.mass)
         v1 = self.INIT_VELOCITY + v_rms  # it has absorbed radiated energy itself while moving
-        a = v_rms * self.time1  # an unknown particle with different acceleration about to hit V1 particle
+        a = v_rms / self.time1  # an unknown particle with different acceleration about to hit V1 particle
         v2 = v1 + a * self.time2  # it is being hit by a particle thus received some energy from that's acceleration
 
         # del_v_square = (v2 - v1) ** 2
