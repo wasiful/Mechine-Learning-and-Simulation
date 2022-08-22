@@ -136,29 +136,29 @@ print(f"dt_particle= {dt_particle}")
 print(f"dt_wall= {dt_wall}")
 
 
-dt_collision_list = []
-positive_dt_collision_list = []
-if len(dt_collision_list) < 2:
-    delt = 0.0001
-    delt_positive = abs(delt)
-    positive_dt_collision_list.append(delt_positive)
-else:
-    for x in range(len(dt_collision_list) - 1):
-        delt = dt_collision_list[x + 1] - dt_collision_list[x]
-        delt_positive = abs(delt)
-        positive_dt_collision_list.append(delt_positive)
-        print(f"delt= {delt}")
-        print(f"delt positive= {delt_positive}")
-        # if len(positive_dt_collision_list) == 0:
-        #     delt_average = 0.00001
-        # else:
-        delt_average = sum(positive_dt_collision_list) / len(positive_dt_collision_list)
-
-        print(f"delt average= {delt_average}")
-print(f"positive_dt_collision_list= {positive_dt_collision_list}")
-# delt = abs(dt_collision_list[kx + 1] - dt_collision_list[kx])
-# print(f"...............delt = {delt}")
-print(f"...............dt_collision list = {dt_collision_list}")
+# dt_collision_list = []
+# positive_dt_collision_list = []
+# if len(dt_collision_list) < 2:
+#     delt = 0.0001
+#     delt_positive = abs(delt)
+#     positive_dt_collision_list.append(delt_positive)
+# else:
+#     for x in range(len(dt_collision_list) - 1):
+#         delt = dt_collision_list[x + 1] - dt_collision_list[x]
+#         delt_positive = abs(delt)
+#         positive_dt_collision_list.append(delt_positive)
+#         print(f"delt= {delt}")
+#         print(f"delt positive= {delt_positive}")
+#         # if len(positive_dt_collision_list) == 0:
+#         #     delt_average = 0.00001
+#         # else:
+#         delt_average = sum(positive_dt_collision_list) / len(positive_dt_collision_list)
+#
+#         print(f"delt average= {delt_average}")
+# print(f"positive_dt_collision_list= {positive_dt_collision_list}")
+# # delt = abs(dt_collision_list[kx + 1] - dt_collision_list[kx])
+# # print(f"...............delt = {delt}")
+# print(f"...............dt_collision list = {dt_collision_list}")
 # Loop over the time steps.
 for i in range(1, t.size):
     # Copy the positions from the previous time step.
@@ -185,13 +185,21 @@ for i in range(1, t.size):
                 m2 = m[k2]
                 v1_s = v[i, k1] @ er
                 v2_s = v[i, k2] @ er
+                print(f"v1_s = {v1_s}")
+                print(f"v2_s = {v2_s}")
+                print(f"m1 = {m1}")
+                print(f"m2 = {m2}")
 
                 v1_s_neu = (2 * m2 * v2_s +
                             (m1 - m2) * v1_s) / (m1 + m2)
                 v2_s_neu = (2 * m1 * v1_s +
                             (m2 - m1) * v2_s) / (m1 + m2)
+                print(f"v1_s_neu = {v1_s_neu}")
+                print(f"v2_s_neu = {v2_s_neu}")
                 v[i, k1] += -v1_s * er + v1_s_neu * er
                 v[i, k2] += -v2_s * er + v2_s_neu * er
+                print(f"v[i, k1] = {v[i, k1]}")
+                print(f"v[i, k2] = {v[i, k2]}")
                 print(f"for dt_particle = {dt_particle}")
                 print(f"for dt_collision = {dt_collision}")
 
@@ -210,7 +218,7 @@ for i in range(1, t.size):
         dt_particle, particle1, particle2 = collision_time(r[i], v[i])
         dt_wall, particle_w, wand = collision_wall(r[i], v[i])
         dt_collision = min(dt_particle, dt_wall)
-        # print(f"dt_collision = {dt_collision}")
+    # print(f"dt_collision = {dt_collision}")
 
     # Now find until the end of the current time step (dt).
     # no more collision. We move all particles up
@@ -218,9 +226,9 @@ for i in range(1, t.size):
     # Check for collisions again.
     r[i] = r[i] + v[i] * (dt - t1)
     dt_collision -= dt - t1
-    dt_collision_list.append(dt_collision)
-    print(f"dt_collision in first for loop = {dt_collision}")
-    print(f"dt_collision list in first for loop = {dt_collision_list}")
+    # dt_collision_list.append(dt_collision)
+    # print(f"dt_collision in first for loop = {dt_collision}")
+    # print(f"dt_collision list in first for loop = {dt_collision_list}")
 
     # Give an information about the progress of the simulation in percent off.
     print(f'{100*i/t.size:.1f} %')

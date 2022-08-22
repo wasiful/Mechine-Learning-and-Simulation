@@ -91,6 +91,9 @@ class Constants:
 #         F_Eer = const * T * conc * E_er
 #         return F_Eer
 
+
+
+
 @dataclass
 class CollisionModel:
     """
@@ -116,18 +119,21 @@ class CollisionModel:
 
     # def calc_constant(self):
     #     R = 8.31446262
+    #     NA = 6.0221408e23
     #     amu_kg = self.amu / 1000
     #     v_rms = np.sqrt((3 * self.BLT_CONST * self.temp) / self.mass)
-    #     F = (1 * R * self.temp) / (6.0221408e23 * amu_kg * v_rms * self.del_t)
+    #     # mole = objmass / (periodicmass * NA)
+    #     F = (1 * R * self.temp) / (NA * amu_kg * v_rms * self.del_t)
     #
     #     v1 = self.INIT_VELOCITY + v_rms
     #     a = v_rms * self.time1
     #     v2 = v1 + a * self.time2
-    #     del_v_square = v2 ** 2 - v1 ** 2
+    #     v_final = v2 + a * (self.time1 / self.time2)  # a tiny amount of lost energy in rotation and randomness
+    #     del_v_square = (v_final - v1) ** 2
     #     del_e = (1 / 2) * self.mass * del_v_square
     #     enr_ex_rate = (del_e/np.abs(self.time2 - self.time1)) / self.del_t
     #     concentration = (3/2) * self.BLT_CONST * 3 / self.VOLUME
-    #     temperature_from_velocity = (1 / 3) * ((self.mass * self.INIT_VELOCITY ** 2) / self.BLT_CONST)
+    #     temperature_from_velocity = (1 / 3) * ((self.mass * del_v_square) / self.BLT_CONST)
     #     constant = F / (temperature_from_velocity * concentration * enr_ex_rate)
     #     return constant
 
@@ -143,7 +149,7 @@ class CollisionModel:
 
         # del_v_square = (v2 - v1) ** 2
         v_final = v2 + a * (self.time1 / self.time2)  # a tiny amount of lost energy in rotation and randomness
-        del_v_square = (v_final - v1) ** 2
+        del_v_square = (v_final ** 2 - v1 ** 2)  # it cant be (v_final - v1 ) ** 2 because E2-E1 = 1/2 m(v2^2-v1^2)
 
         del_e = (1 / 2) * self.mass * del_v_square
 
@@ -155,15 +161,15 @@ class CollisionModel:
         # final_force = enr_ex_rate
         return final_force
 
-    def pressure_force(self):
-        n = 1   # mole of H
-        R = 8.31446261815324
-        T = 273.15
-        V = 0.0224
-        A = (np.cbrt(0.0224)) ** 2
-        pressure_force = (n * R * T * A) / V
-        print (pressure_force)
-        return pressure_force
+    # def pressure_force(self):
+    #     n = 1   # mole of H
+    #     R = 8.31446261815324
+    #     T = 273.15
+    #     V = 0.0224
+    #     A = (np.cbrt(0.0224)) ** 2
+    #     pressure_force = (n * R * T * A) / V
+    #     print (pressure_force)
+    #     return pressure_force
 
 
     def to_dict(self):
@@ -178,10 +184,3 @@ class CollisionModel:
 
 
 
-        # n = 1
-        # R = 8.31446261815324
-        # T = 273.15
-        # V = 0.0224
-        # A =  (np.cbrt(0.0224)) ** 2
-        # pressure_force = n * R * T * A / V
-        # print (pressure_force)

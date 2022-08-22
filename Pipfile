@@ -12,6 +12,8 @@ pandas = "*"
 seaborn = "*"
 
 [dev-packages]
+jupyterlab = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.9"

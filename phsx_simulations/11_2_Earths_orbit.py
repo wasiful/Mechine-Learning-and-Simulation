@@ -38,7 +38,7 @@ def dgl(t, u):
 u0 = np.concatenate((r0, v0))
 
 # equation of motion
-result = scipy.integrate.solve_ivp(dgl, [0, T], u0, dense_output=True)
+result = scipy.integrate.solve_ivp(dgl, [0, T], u0, rtol=1e-9, dense_output=True)
 
 t_s = result.t
 r_s, v_s = np.split(result.y, 2)
@@ -49,14 +49,16 @@ r, v = np.split(result.sol(t), 2)
 
 fig = plt.figure(figsize=(16, 10))
 ax = fig.add_subplot(1, 1, 1)
-ax.set_aspect('equal')
 ax.set_xlabel('x [AE]')
 ax.set_ylabel('y [AE]')
+# ax.set_xlim(-0.2, 1.1)
+# ax.set_ylim(-0.6, 0.6)
+ax.set_aspect('equal')
 ax.grid()
 
 # plot trajectories of celestial bodies
-ax.plot(r_s[0]/ AU, r_s[1]/ AU, '.b')
-ax.plot(r[0]/ AU, r[1] / AU, '-b')
+ax.plot(r_s[0] / AU, r_s[1] / AU, '.b')
+ax.plot(r[0] / AU, r[1] / AU, '-b')
 
 # Generate dot plots for the positions of the celestial bodies.
 planet, = ax.plot([0], [0], 'o', color='red')
@@ -92,7 +94,7 @@ def update(n):
     arrow_v.set_positions(r[:, n] / AU,  r[:, n] / AU + scal_v * v[:, n])
 
     # Update the text field for the time
-    text_t.set_text(f't = {t[n] / day: 0f} d')
+    text_t.set_text(f't = {t[n] / day:.0f} d')
     return planet, arrow_v, arrow_a, text_t
 
 
