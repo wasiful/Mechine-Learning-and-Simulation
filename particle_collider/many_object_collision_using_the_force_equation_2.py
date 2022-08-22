@@ -126,6 +126,29 @@ dt_particle, particle1, particle2 = collision_time(r[0], v[0])
 dt_wall, particle_w, wall = collision_wall(r[0], v[0])
 dt_collision = min(dt_particle, dt_wall)
 
+
+# dt_collision_list = []
+# def time_calculation:
+#     positive_dt_collision_list = []
+#     if len(dt_collision_list) < 1:
+#         delt = 0.0001
+#         delt_positive = abs(delt)
+#         positive_dt_collision_list.append(delt_positive)
+#     else:
+#         for x in range(len(dt_collision_list) - 1):
+#             time2 = dt_collision_list[x + 1]
+#             time1 = dt_collision_list[x]
+#             delt = time2 - time1
+#             delt_positive = abs(delt)
+#             positive_dt_collision_list.append(delt_positive)
+#             # print(f"delt= {delt}")
+#             print(f"delt positive= {delt_positive}")
+#             delt_average = sum(positive_dt_collision_list) / len(positive_dt_collision_list)
+#             # delt_average = 0.3
+#             print(f"delt average= {delt_average}")
+#             print(positive_dt_collision_list)
+#     return time1, time2, delt, delt_average
+
 dt_collision_list = []
 # Loop over the time steps.
 print(f"t.size = {t.size}")
@@ -244,7 +267,7 @@ for i in range(1, t.size):
     # Check for collisions again.
     r[i] = r[i] + v[i] * (dt - t1)
     dt_collision -= dt - t1
-    # dt_collision_list.append(dt_collision)
+    dt_collision_list.append(dt_collision)
 
     # Give an information about the progress of the simulation in percent off.
     print(f'{100*i/t.size:.1f} %')
