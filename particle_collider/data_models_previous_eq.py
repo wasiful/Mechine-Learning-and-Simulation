@@ -52,10 +52,11 @@ class CollisionModel:
 
         del_e = (1 / 2) * self.mass * del_v_square
 
-        enr_ex_rate = (del_e/np.abs(self.time2 - self.time1)) / self.del_t
-        concentration = (1/2) * self.mass * v_final ** 2 / self.VOLUME
         # concentration = self.mass * self.SPACIFIC_HEAT * (T2 - T1) / self.VOLUME
         temperature_from_velocity = (1 / 3) * (self.mass * v2 ** 2)
+        concentration = (1 / 2) * self.mass * v_final ** 2 / self.VOLUME
+        enr_ex_rate = (del_e/np.abs(self.time2 - self.time1)) / self.del_t
+
         final_force = self.FORCE_CONST * temperature_from_velocity * concentration * enr_ex_rate
         # final_force = enr_ex_rate
         return final_force
