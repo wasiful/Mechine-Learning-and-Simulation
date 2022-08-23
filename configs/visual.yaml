@@ -1,0 +1,5 @@
+# Set the maximum for displaying the histogram
+# Speed, the maximum number of particles per bar and the number of bars (n_bins) fixed.
+v_max: 3.0
+n_max: 50
+n_bins: 15
