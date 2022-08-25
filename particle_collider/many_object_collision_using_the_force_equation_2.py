@@ -258,7 +258,7 @@ for i in range(1, t.size):
 
         # Since collisions have taken place, recalculate.
         dt_particle, particle1, particle2 = collision_time(r[i], v[i])
-        dt_wall, particle_w, wand = collision_wall(r[i], v[i])
+        dt_wall, particle_w, wall = collision_wall(r[i], v[i])
         dt_collision = min(dt_particle, dt_wall)
 
     # Now find until the end of the current time step (dt).
