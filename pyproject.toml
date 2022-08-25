@@ -1,7 +1,28 @@
+[tool.poetry]
+name = "physicssimulation"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "^1.23.2"
+matplotlib = "^3.5.3"
+omegaconf = "^2.2.3"
+pytest = "^7.1.2"
+pandas = "^1.4.3"
+
+[tool.poetry.dev-dependencies]
+
 [tool.pytest.ini_options]
+pythonpath = ["src"]
 minversion = "6.0"
 addopts = "-ra -v"
 testpaths = [
     "tests",
     "integration",
 ]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

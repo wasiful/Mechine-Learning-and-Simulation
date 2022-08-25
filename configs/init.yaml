@@ -1,0 +1,14 @@
+# box dimensions.
+dim: 2
+# Number of particles.
+N: 200
+# Simulation duration T and increment dt [s].
+T: 10
+dt: 0.01
+# Smallest time difference at which collisions than simultaneously be accepted [s].
+epsilon: 1e-9
+
+# For each wall, the distance from the coordinate origin
+# wall_d and an outward-pointing normal vector wall_n specified.
+wall_d: [2.0, 2.0, 2.0, 2.0]
+wall_n: [[0, -1.0], [0, 1.0], [-1.0, 0], [1.0, 0]]
