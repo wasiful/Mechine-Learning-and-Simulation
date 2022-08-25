@@ -6,9 +6,6 @@ import typing as t
 @dataclass
 class Constants:
     BOHR_RADIUS = 5.29177210903e-11
-
-
-
     VOLUME = (4 / 3) * np.pi * BOHR_RADIUS ** 3
     BLT_CONST = 1.380649e-23
     INIT_VELOCITY = 1.845e3
@@ -60,7 +57,6 @@ class CollisionModel:
         final_force = self.FORCE_CONST * temperature_from_velocity * concentration * enr_ex_rate
         # final_force = enr_ex_rate
         return final_force
-
 
     def to_dict(self):
         return dict(

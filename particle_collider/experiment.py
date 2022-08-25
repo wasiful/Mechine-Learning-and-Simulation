@@ -1,4 +1,4 @@
-from particle_collider.data_models import CollisionModel
+from particle_collider.data_models_previous_eq import CollisionModel
 import typing as t
 import pandas as pd
 import numpy as np

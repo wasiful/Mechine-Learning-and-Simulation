@@ -28,7 +28,7 @@ const = 1
 # C = 299792458
 T_list = np.linspace(273.15, 1273.15, 1000)
 m_list = np.linspace(1.67262192e-27, 3.9525642e-25, 1000)
-
+volume = 1
 
 # a list of temperature and a list of mass
 # problem with time and velocity
