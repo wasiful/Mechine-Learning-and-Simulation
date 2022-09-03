@@ -149,7 +149,11 @@ dt_collision = min(dt_particle, dt_wall)
 #             print(positive_dt_collision_list)
 #     return time1, time2, delt, delt_average
 
-
+dt_collision_list = []
+if np.average(dt_collision_list) == 0:
+    delt = 1
+    dt_collision_list.append(delt)
+positive_dt_collision_list = []
 #
 # def time_calculation(dt_collision_list : list):
 #     positive_dt_collision_list = []
@@ -177,29 +181,11 @@ volume = 0.0005235987755982989  # calculated from his radius
 temp = 273.15
 BLT_CONST = 1.380649e-23
 
+
 for i in range(1, t.size):
     # Copy the positions from the previous time step.
     r[i] = r[i - 1]
     v[i] = v[i - 1]
-
-#
-    dt_new = '0.9'
-    dt_new2 = float(dt_new)
-    dt_previous = '0.1'
-    dt_previous2 = float(dt_previous)
-
-    dt_collision_list = []
-    if np.average(dt_collision_list) == 0:
-        delt = 1
-        dt_collision_list.append(delt)
-    positive_dt_collision_list = []
-    time2 = dt_new2
-    time1 = dt_previous2
-    delt = time2 - time1
-    delt_positive = abs(delt)
-    positive_dt_collision_list.append(delt_positive)
-
-#
 
     # Time that has already been simulated in this time step..
     t1 = 0
@@ -210,11 +196,17 @@ for i in range(1, t.size):
         # Move all particles forward until collision.
         r[i] += v[i] * dt_collision
 
-
         # Collisions between particles among themselves.
         if dt_particle <= dt_wall:
 
             for k1, k2 in zip(particle1, particle2):
+                for xdtl in range(len(dt_collision_list)-1):
+                    time2 = dt_collision_list[xdtl + 1]
+                    time1 = dt_collision_list[xdtl]
+                    # print(f'time1, time2 = {time1}, {time2}')
+                    delt = time2 - time1
+                    delt_positive = abs(delt)
+                    positive_dt_collision_list.append(delt_positive)
                 dr = r[i, k1] - r[i, k2]
                 dv = v[i, k1] - v[i, k2]
                 er = dr / np.linalg.norm(dr)
@@ -224,23 +216,11 @@ for i in range(1, t.size):
                 v2_s = v[i, k2] @ er
                 print(f"v1s = {v1_s}")
                 print(f"v2s = {v2_s}")
-                dt_new = '0.9'
-                dt_new2 = float(dt_new)
-                dt_previous = '0.1'
-                dt_previous2 = float(dt_previous)
 
-                dt_collision_list = []
-                if np.average(dt_collision_list) == 0:
-                    delt = 1
-                    dt_collision_list.append(delt)
-                positive_dt_collision_list = []
-                time2 = dt_new2
-                time1 = dt_previous2
-                delt = time2 - time1
-                delt_positive = abs(delt)
-                positive_dt_collision_list.append(delt_positive)
                 #
+
                 #
+                print(f'time1, time2 in the main loop= {time1}, {time2}, {delt}, {delt_average}, {delt_positive}')
                 delt_average = np.average(positive_dt_collision_list)
                 # for v1 new
                 mass = m2
@@ -304,11 +284,6 @@ for i in range(1, t.size):
     r[i] = r[i] + v[i] * (dt - t1)
     dt_collision -= dt - t1
     dt_collision_list.append(dt_collision)
-
-    dt_old = str(dt_new2)
-    dt_previous.replace('0.1', dt_old)
-    dt_collision = str(dt_collision)
-    dt_new.replace('0.9', dt_collision)
 
     # Give an information about the progress of the simulation in percent off.
     print(f'{100*i/t.size:.1f} %')
