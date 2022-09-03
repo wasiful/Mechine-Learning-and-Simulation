@@ -149,7 +149,26 @@ dt_collision = min(dt_particle, dt_wall)
 #             print(positive_dt_collision_list)
 #     return time1, time2, delt, delt_average
 
-dt_collision_list = []
+
+#
+# def time_calculation(dt_collision_list : list):
+#     positive_dt_collision_list = []
+#
+#     for x in range(len(dt_collision_list) - 1):
+#         time2 = dt_collision_list[x + 1]
+#         time1 = dt_collision_list[x]
+#         delt = time2 - time1
+#         delt_positive = abs(delt)
+#         positive_dt_collision_list.append(delt_positive)
+#         # print(f"delt= {delt}")
+#         print(f"delt positive= {delt_positive}")
+#         # delt_average = sum(positive_dt_collision_list) / len(positive_dt_collision_list)
+#         delt_average = np.average(positive_dt_collision_list)
+#         # delt_average = 0.3
+#         print(f"delt average= {delt_average}")
+#         print(positive_dt_collision_list)
+#         return time1, time2, delt, delt_positive, delt_average
+
 # Loop over the time steps.
 print(f"t.size = {t.size}")
 volume = 0.0005235987755982989  # calculated from his radius
@@ -163,16 +182,38 @@ for i in range(1, t.size):
     r[i] = r[i - 1]
     v[i] = v[i - 1]
 
+#
+    dt_new = '0.9'
+    dt_new2 = float(dt_new)
+    dt_previous = '0.1'
+    dt_previous2 = float(dt_previous)
+
+    dt_collision_list = []
+    if np.average(dt_collision_list) == 0:
+        delt = 1
+        dt_collision_list.append(delt)
+    positive_dt_collision_list = []
+    time2 = dt_new2
+    time1 = dt_previous2
+    delt = time2 - time1
+    delt_positive = abs(delt)
+    positive_dt_collision_list.append(delt_positive)
+
+#
+
     # Time that has already been simulated in this time step..
     t1 = 0
 
     # Handle all collisions in this one in turn timestep.
+    print(f'dt_collision in t1 problem = {dt_collision}, {t1}, {dt}')
     while t1 + dt_collision <= dt:
         # Move all particles forward until collision.
         r[i] += v[i] * dt_collision
 
+
         # Collisions between particles among themselves.
         if dt_particle <= dt_wall:
+
             for k1, k2 in zip(particle1, particle2):
                 dr = r[i, k1] - r[i, k2]
                 dv = v[i, k1] - v[i, k2]
@@ -183,68 +224,63 @@ for i in range(1, t.size):
                 v2_s = v[i, k2] @ er
                 print(f"v1s = {v1_s}")
                 print(f"v2s = {v2_s}")
-                #
-                #
+                dt_new = '0.9'
+                dt_new2 = float(dt_new)
+                dt_previous = '0.1'
+                dt_previous2 = float(dt_previous)
+
+                dt_collision_list = []
+                if np.average(dt_collision_list) == 0:
+                    delt = 1
+                    dt_collision_list.append(delt)
                 positive_dt_collision_list = []
-                if len(dt_collision_list) < 1:
-                    delt = 0.0001
-                    delt_positive = abs(delt)
-                    positive_dt_collision_list.append(delt_positive)
-                else:
-                    for x in range(len(dt_collision_list) - 1):
-                        time2 = dt_collision_list[x + 1]
-                        time1 = dt_collision_list[x]
-                        delt = time2 - time1
-                        delt_positive = abs(delt)
-                        positive_dt_collision_list.append(delt_positive)
-                        # print(f"delt= {delt}")
-                        print(f"delt positive= {delt_positive}")
-                        delt_average = sum(positive_dt_collision_list) / len(positive_dt_collision_list)
-                        # delt_average = 0.3
-                        print(f"delt average= {delt_average}")
-                        print(positive_dt_collision_list)
-                        # for v1 new
-                        mass = m2
-                        print(f"m2 = {m2}")
-                        initial_velocity = v2_s
-                        v_rms = np.sqrt((3 * BLT_CONST * temp) / mass)
-                        v1 = initial_velocity + v_rms  # it has absorbed radiated energy itself while moving
-                        a = v_rms / time1  # an unknown particle with different acceleration about to hit V1 particle
-                        v2 = v1 + a * time2  # it is being hit by a particle thus received some energy from that's acceleration
+                time2 = dt_new2
+                time1 = dt_previous2
+                delt = time2 - time1
+                delt_positive = abs(delt)
+                positive_dt_collision_list.append(delt_positive)
+                #
+                #
+                delt_average = np.average(positive_dt_collision_list)
+                # for v1 new
+                mass = m2
+                print(f"m2 = {m2}")
+                initial_velocity = v2_s
+                v_rms = np.sqrt((3 * BLT_CONST * temp) / mass)
+                v1 = initial_velocity + v_rms  # it has absorbed radiated energy itself while moving
+                a = v_rms / time1  # an unknown particle with different acceleration about to hit V1 particle
+                v2 = v1 + a * time2  # it is being hit by a particle thus received some energy from that's acceleration
 
-                        v1_s_neu = (1 / 4) * m2 * v2 ** 2 * m2 * (v1 - v2) ** 2 * temp * time1 * (
-                                1 / (delt * delt_average * volume * (m1 + m2)))
-                        print(f"v1 = {v1}")
-                        print(f"v2 = {v2}")
-                        print(f"v1s_neu = {v1_s_neu}")
+                v1_s_neu = ((1 / 4) * m2 * v2 ** 2 * m2 * (v1 ** 2 - v2 ** 2) * temp * time1) / (delt * delt_average * volume * (m1 + m2))
+                print(f"v1 = {v1}")
+                print(f"v2 = {v2}")
+                print(f"v1s_neu = {v1_s_neu}")
+                #
+                # for v2 new
+                mass = m1
+                print(f"m1 = {m1}")
+                initial_velocity = v1_s
+                v_rms = np.sqrt((3 * BLT_CONST * temp) / mass)
+                v1 = initial_velocity + v_rms  # it has absorbed radiated energy itself while moving
+                a = v_rms / time1  # an unknown particle with different acceleration about to hit V1 particle
+                v2 = v1 + a * time2  # it is being hit by a particle thus received some energy from that's acceleration
 
+                v2_s_neu = ((1 / 4) * m1 * v1 ** 2 * m1 * (v2 ** 2 - v1 ** 2) * temp * time2 ) / (delt * delt_average * volume * (m1 + m2))
+                print(f"v1 = {v1}")
+                print(f"v2 = {v2}")
+                print(f"v2s_neu = {v2_s_neu}")
+                print(f" delt = {delt}")
+                print(f"delt average = {delt_average}")
+                print(f" temp = {temp}")
+                print(f" m2 = {m2}")
+                print(f" volume = {volume}")
+                #
+                #
+                # v1_s_neu = (2 * m2 * v2_s + (m1 - m2) * v1_s) / (m1 + m2)
+                # v2_s_neu = (2 * m1 * v1_s + (m2 - m1) * v2_s) / (m1 + m2)
+                v[i, k1] += -v1_s * er + v1_s_neu * er
+                v[i, k2] += -v2_s * er + v2_s_neu * er
 
-                        #
-                        # for v2 new
-                        mass = m1
-                        print(f"m1 = {m1}")
-                        initial_velocity = v1_s
-                        v_rms = np.sqrt((3 * BLT_CONST * temp) / mass)
-                        v1 = initial_velocity + v_rms  # it has absorbed radiated energy itself while moving
-                        a = v_rms / time1  # an unknown particle with different acceleration about to hit V1 particle
-                        v2 = v1 + a * time2  # it is being hit by a particle thus received some energy from that's acceleration
-
-                        v2_s_neu = (1 / 4) * m1 * v1 ** 2 * m1 * (v2 - v1) ** 2 * temp * time2 * (
-                                1 / (delt * delt_average * volume * (m1 + m2)))
-                        print(f"v1 = {v1}")
-                        print(f"v2 = {v2}")
-                        print(f"v2s_neu = {v2_s_neu}")
-                        print(f" delt = {delt}")
-                        print(f"delt average = {delt_average}")
-                        print(f" temp = {temp}")
-                        print(f" m2 = {m2}")
-                        print(f" volume = {volume}")
-                        #
-                        #
-                        # v1_s_neu = (2 * m2 * v2_s + (m1 - m2) * v1_s) / (m1 + m2)
-                        # v2_s_neu = (2 * m1 * v1_s + (m2 - m1) * v2_s) / (m1 + m2)
-                        v[i, k1] += -v1_s * er + v1_s_neu * er
-                        v[i, k2] += -v2_s * er + v2_s_neu * er
 
         # Collisions between particles and walls.
         if dt_particle >= dt_wall:
@@ -268,6 +304,11 @@ for i in range(1, t.size):
     r[i] = r[i] + v[i] * (dt - t1)
     dt_collision -= dt - t1
     dt_collision_list.append(dt_collision)
+
+    dt_old = str(dt_new2)
+    dt_previous.replace('0.1', dt_old)
+    dt_collision = str(dt_collision)
+    dt_new.replace('0.9', dt_collision)
 
     # Give an information about the progress of the simulation in percent off.
     print(f'{100*i/t.size:.1f} %')
