@@ -150,10 +150,13 @@ dt_collision = min(dt_particle, dt_wall)
 #     return time1, time2, delt, delt_average
 
 dt_collision_list = []
-if np.average(dt_collision_list) == 0:
+if range(len(dt_collision_list)) == 0:
     delt = 1
     dt_collision_list.append(delt)
 positive_dt_collision_list = []
+if range(len(positive_dt_collision_list)) == 0:
+    delt = 1
+    positive_dt_collision_list.append(delt)
 #
 # def time_calculation(dt_collision_list : list):
 #     positive_dt_collision_list = []
@@ -198,68 +201,71 @@ for i in range(1, t.size):
 
         # Collisions between particles among themselves.
         if dt_particle <= dt_wall:
+            for xdtl in range(len(dt_collision_list) - 1):
+                for k1, k2 in zip(particle1, particle2):
 
-            for k1, k2 in zip(particle1, particle2):
-                for xdtl in range(len(dt_collision_list)-1):
                     time2 = dt_collision_list[xdtl + 1]
                     time1 = dt_collision_list[xdtl]
                     # print(f'time1, time2 = {time1}, {time2}')
                     delt = time2 - time1
                     delt_positive = abs(delt)
                     positive_dt_collision_list.append(delt_positive)
-                dr = r[i, k1] - r[i, k2]
-                dv = v[i, k1] - v[i, k2]
-                er = dr / np.linalg.norm(dr)
-                m1 = m[k1]
-                m2 = m[k2]
-                v1_s = v[i, k1] @ er
-                v2_s = v[i, k2] @ er
-                print(f"v1s = {v1_s}")
-                print(f"v2s = {v2_s}")
 
-                #
+                    #
 
-                #
-                print(f'time1, time2 in the main loop= {time1}, {time2}, {delt}, {delt_average}, {delt_positive}')
-                delt_average = np.average(positive_dt_collision_list)
-                # for v1 new
-                mass = m2
-                print(f"m2 = {m2}")
-                initial_velocity = v2_s
-                v_rms = np.sqrt((3 * BLT_CONST * temp) / mass)
-                v1 = initial_velocity + v_rms  # it has absorbed radiated energy itself while moving
-                a = v_rms / time1  # an unknown particle with different acceleration about to hit V1 particle
-                v2 = v1 + a * time2  # it is being hit by a particle thus received some energy from that's acceleration
+                    dr = r[i, k1] - r[i, k2]
+                    dv = v[i, k1] - v[i, k2]
+                    er = dr / np.linalg.norm(dr)
+                    m1 = m[k1]
+                    m2 = m[k2]
+                    v1_s = v[i, k1] @ er
+                    v2_s = v[i, k2] @ er
+                    print(f"v1s = {v1_s}")
+                    print(f"v2s = {v2_s}")
 
-                v1_s_neu = ((1 / 4) * m2 * v2 ** 2 * m2 * (v1 ** 2 - v2 ** 2) * temp * time1) / (delt * delt_average * volume * (m1 + m2))
-                print(f"v1 = {v1}")
-                print(f"v2 = {v2}")
-                print(f"v1s_neu = {v1_s_neu}")
-                #
-                # for v2 new
-                mass = m1
-                print(f"m1 = {m1}")
-                initial_velocity = v1_s
-                v_rms = np.sqrt((3 * BLT_CONST * temp) / mass)
-                v1 = initial_velocity + v_rms  # it has absorbed radiated energy itself while moving
-                a = v_rms / time1  # an unknown particle with different acceleration about to hit V1 particle
-                v2 = v1 + a * time2  # it is being hit by a particle thus received some energy from that's acceleration
+                    #
 
-                v2_s_neu = ((1 / 4) * m1 * v1 ** 2 * m1 * (v2 ** 2 - v1 ** 2) * temp * time2 ) / (delt * delt_average * volume * (m1 + m2))
-                print(f"v1 = {v1}")
-                print(f"v2 = {v2}")
-                print(f"v2s_neu = {v2_s_neu}")
-                print(f" delt = {delt}")
-                print(f"delt average = {delt_average}")
-                print(f" temp = {temp}")
-                print(f" m2 = {m2}")
-                print(f" volume = {volume}")
-                #
-                #
-                # v1_s_neu = (2 * m2 * v2_s + (m1 - m2) * v1_s) / (m1 + m2)
-                # v2_s_neu = (2 * m1 * v1_s + (m2 - m1) * v2_s) / (m1 + m2)
-                v[i, k1] += -v1_s * er + v1_s_neu * er
-                v[i, k2] += -v2_s * er + v2_s_neu * er
+                    #
+                    print(f'time1, time2 in the main loop= {time1}, {time2}, {delt}, {delt_positive}')
+                    delt_average = np.average(positive_dt_collision_list)
+                    # for v1 new
+                    mass = m2
+                    print(f"m2 = {m2}")
+                    initial_velocity = v2_s
+                    v_rms = np.sqrt((3 * BLT_CONST * temp) / mass)
+                    v1 = initial_velocity + v_rms  # it has absorbed radiated energy itself while moving
+                    a = v_rms / time1  # an unknown particle with different acceleration about to hit V1 particle
+                    v2 = v1 + a * time2  # it is being hit by a particle thus received some energy from that's acceleration
+
+                    v1_s_neu = ((1 / 4) * m2 * v2 ** 2 * m2 * (v1 ** 2 - v2 ** 2) * temp * time1) / (delt * delt_average * volume * (m1 + m2))
+                    print(f"v1 = {v1}")
+                    print(f"v2 = {v2}")
+                    print(f"v1s_neu = {v1_s_neu}")
+                    #
+                    # for v2 new
+                    mass = m1
+                    print(f"m1 = {m1}")
+                    initial_velocity = v1_s
+                    v_rms = np.sqrt((3 * BLT_CONST * temp) / mass)
+                    v1 = initial_velocity + v_rms  # it has absorbed radiated energy itself while moving
+                    a = v_rms / time1  # an unknown particle with different acceleration about to hit V1 particle
+                    v2 = v1 + a * time2  # it is being hit by a particle thus received some energy from that's acceleration
+
+                    v2_s_neu = ((1 / 4) * m1 * v1 ** 2 * m1 * (v2 ** 2 - v1 ** 2) * temp * time2 ) / (delt * delt_average * volume * (m1 + m2))
+                    print(f"v1 = {v1}")
+                    print(f"v2 = {v2}")
+                    print(f"v2s_neu = {v2_s_neu}")
+                    print(f" delt = {delt}")
+                    print(f"delt average = {delt_average}")
+                    print(f" temp = {temp}")
+                    print(f" m2 = {m2}")
+                    print(f" volume = {volume}")
+                    #
+                    #
+                    # v1_s_neu = (2 * m2 * v2_s + (m1 - m2) * v1_s) / (m1 + m2)
+                    # v2_s_neu = (2 * m1 * v1_s + (m2 - m1) * v2_s) / (m1 + m2)
+                    v[i, k1] += -v1_s * er + v1_s_neu * er
+                    v[i, k2] += -v2_s * er + v2_s_neu * er
 
 
         # Collisions between particles and walls.
